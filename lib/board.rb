@@ -3,7 +3,14 @@ class Board
   attr_accessor :columns
 
   def initialize
-    @columns = [ [],[],[],[],[],[],[] ]
+    @columns = [ 
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0] ]
 
   end
 
@@ -11,47 +18,88 @@ class Board
     count = 1
     last = nil
     arr.each_with_index do |i, ind|
-      if i == last
+      if i == last and [1,2].include? i
         count += 1
         if count >= 4
-          return true
+          return i
         end
       else
         count = 1
       end
       last = i
     end
-    false
+    nil
   end
 
   def is_full?(arr = [])
-    arr.size >= 6 ? true : false
+    arr.include?(0) ? false : true
   end
-
-  def check_columns
-  end
-    
 
   def check_win
+    # check columns
+    out = nil
+    @columns.each do |col|
+      out = has_four?(col)
+      if out != nil
+        return out
+      end
+    end
+
+    # check rows
+    col_t = @columns.transpose
+    col_t.each do |col|
+      out = has_four?(col)
+      if out != nil
+        return out
+      end
+    end
+
+    # check diagonals
+    col_f = @columns.flatten
+    col_f.each_with_index do |item, ind|
+    end
+
+    out
+  end
+
+  def flattenFill(arr)
+    # this will be moved to Display class later, only used
+    #   to fill out @columns for display
+    #   - also, might not be needed, maybe just indexing 
+    #     to an empty space will return nil in show_board?
+    new_arr = []
+    7.times do |i|
+      6.times do |k|
+        if arr[i][k] != 0 
+          new_arr.push(arr[i][k])
+        else
+          new_arr.push(0)
+        end
+      end
+    end
+    new_arr
   end
 
   def show_board
+    # this will be moved to Display class later
     puts "CONNECT 4!!!"
     puts "\n" + "-"*10 + "\n"
-    arr = @columns.flatten
+    arr = flattenFill(@columns)
     6.times do |i|
       7.times do |k|
         c = arr[(5-i) + (6*k)]
-        c == nil ? c = '.' : c = c
+        c == 0 ? c = '.' : c = c
         print "#{c} "
       end
       print "\n"
     end
   end
 
-  def add_piece(char, column)
-    @columns[column].push(char)
+  def add_piece(num, column)
+    if !is_full?(@columns[column])
+      ind = @columns[column].index(0)
+      @columns[column][ind] = num 
+    end
   end
-
 
 end
