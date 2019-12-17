@@ -4,13 +4,13 @@ class Board
 
   def initialize
     @columns = [ 
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0] ]
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0] ]
 
   end
 
@@ -56,7 +56,28 @@ class Board
 
     # check diagonals
     col_f = @columns.flatten
-    col_f.each_with_index do |item, ind|
+    # down-left
+    col_f.each_index do |ind|
+      arr = []
+      6.times do |i|
+        arr.push(col_f[ind+(i*5)])
+      end
+      out = has_four?(arr)
+      if out != nil
+        return out
+      end
+    end
+
+    # up-right
+    col_f.each_index do |ind|
+      arr = []
+      6.times do |i|
+        arr.push(col_f[ind+(i*7)])
+      end
+      out = has_four?(arr)
+      if out != nil
+        return out
+      end
     end
 
     out
@@ -93,13 +114,20 @@ class Board
       end
       print "\n"
     end
+    print "-"*10 + "\n"
+    7.times do |i|
+      print "#{i+1} "
+    end
   end
 
   def add_piece(num, column)
     if !is_full?(@columns[column])
       ind = @columns[column].index(0)
       @columns[column][ind] = num 
+    else
+      0
     end
+    1
   end
 
 end
